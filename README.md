@@ -1,4 +1,4 @@
-# EA NHL End of Game stats reader
+# EA NHL Video analyzer
 
 ## Prerequisites
 
@@ -7,6 +7,50 @@ Docker and Docker compose need to be installed in order to run the application.
 
 ## Usage
 
+### Video analysis
+The Tensoflow model required in order to use the classifier for video stream. This can be
+created by training or used a pretrained model. A pretrained model can downloaded from:
+https://drive.google.com/open?id=1jYaGyjpTR7gRpY4QQLzLQxbzh8RV5b2o
+
+
+To run the video analyzer for a YouTube link, run:
+
+```bash
+docker-compose run --rm app ./video_analyzer.py https://www.youtube.com/watch?v=MjhNIDqOO5Q
+```
+
+To run the video analyzer for a local video file, run:
+
+```bash
+docker-compose run --rm app ./video_analyzer.py <video_path>
+```
+
+Output is an array of (event time, class)-tuples. Example:
+```python
+[
+  (1, 'game'),
+  (2, 'game'),
+  # ...
+  (1000, 'goal'),
+  # ...
+  (1600, 'results'),
+]
+```
+
+**TODO:** Do something useful with the classes.
+
+### Image classification model training
+
+Training data expects a root path containing images in three adjacent folders named `train` `val` `test`.
+Example dataset can be downloaded from: https://drive.google.com/open?id=1hlDgZ2pVPAmMbXuxpyrgv-i9sUF89Q7U
+
+Run training:
+
+```bash
+docker-compose run --rm app ./image_classifier.py train <data_path>
+```
+
+### Data extractor for results page
 Use docker-compose to run the extractor:
 
 ```bash
